@@ -3,11 +3,14 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactsList/ContactsList';
 import { Filter } from './Filter/Filter';
 
+const LS_KEY = 'saved_contacts';
+
 export class App extends Component {
   state = {
-    contacts: [],
+    contacts: JSON.parse(localStorage.getItem(LS_KEY)) || [],
     filter: '',
   };
+
   addContact = contact => {
     const alreadyIn = this.state.contacts.find(
       existingContact =>
@@ -19,7 +22,9 @@ export class App extends Component {
     }
 
     this.setState(prevState => {
-      return { contacts: [...prevState.contacts, contact] };
+      return {
+        contacts: [...prevState.contacts, contact],
+      };
     });
   };
   removeContact = id => {
@@ -35,6 +40,11 @@ export class App extends Component {
       name.toLowerCase().includes(filter.toLowerCase())
     );
   };
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem(LS_KEY, JSON.stringify([...this.state.contacts]));
+    }
+  }
   render() {
     return (
       <div
