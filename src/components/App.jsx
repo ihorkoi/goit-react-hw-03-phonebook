@@ -7,7 +7,7 @@ const LS_KEY = 'saved_contacts';
 
 export class App extends Component {
   state = {
-    contacts: JSON.parse(localStorage.getItem(LS_KEY)) || [],
+    contacts: [],
     filter: '',
   };
 
@@ -43,6 +43,11 @@ export class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.contacts !== this.state.contacts) {
       localStorage.setItem(LS_KEY, JSON.stringify([...this.state.contacts]));
+    }
+  }
+  componentDidMount() {
+    if (localStorage.getItem(LS_KEY)) {
+      this.setState({ contacts: JSON.parse(localStorage.getItem(LS_KEY)) });
     }
   }
   render() {
